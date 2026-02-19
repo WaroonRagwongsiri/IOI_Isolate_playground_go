@@ -24,6 +24,12 @@ func JobFromIDRoutes(app *fiber.App) {
 	app.Get("/job_id", func(c *fiber.Ctx) error {
 		var req controller.JobFromId
 
+		if err := c.BodyParser(&req); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Invalid JSON body",
+			})
+		}
+
 		return c.JSON(controller.JobFromIDController(req))
 	})
 }

@@ -8,18 +8,18 @@ type RunC struct
 
 type RunCResponse struct
 {
-	JobId string `json:"jobId"`
+	JobId string `json:"job_id"`
 }
 
 func RunCController(req RunC) RunCResponse {
 	return RunCResponse{
-		JobId: "uuid4",
+		JobId: req.Code + req.Stdin,
 	}
 }
 
 type JobFromId struct
 {
-	JobId string `json:"jobid"`
+	JobId string `json:"job_id"`
 }
 
 type JobFromIdResponse struct {
@@ -29,7 +29,7 @@ type JobFromIdResponse struct {
 
 func JobFromIDController(req JobFromId) JobFromIdResponse {
 	return JobFromIdResponse{
-		Stdout: "Good",
-		Stderr: "Bad",
+		Stdout: req.JobId,
+		Stderr: req.JobId,
 	}
 }
