@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
+	"ioitest/controller"
 	"ioitest/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +14,8 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New())
 
+	controller.StartWorkers()
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Connected")
 	})
@@ -21,6 +23,6 @@ func main() {
 	router.RunCRoutes(app)
 	router.JobFromIDRoutes(app)
 
-	fmt.Println("Server is running on http://localhost:8080")
+	log.Println("Server is running on http://localhost:8080")
 	log.Fatal(app.Listen(":8080"))
 }

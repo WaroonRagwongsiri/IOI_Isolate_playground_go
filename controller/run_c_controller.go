@@ -1,35 +1,30 @@
 package controller
 
-type RunC struct
-{
-	Code string `json:"code"`
-	Stdin string `json:"stdin"`
-}
+import (
+	"github.com/google/uuid"
+)
 
-type RunCResponse struct
-{
-	JobId string `json:"job_id"`
-}
-
+// RunCController: enqueue job, return job_id
 func RunCController(req RunC) RunCResponse {
-	return RunCResponse{
-		JobId: req.Code + req.Stdin,
+	jobID := uuid.NewString()
+
+	// store initial job state
+	jobStoreSet(jobID, jobState{status: "queued"})
+
+	// enqueue (no package-level error var)
+	if !EnqueueJob(jobID, req.Code, req.Stdin) {
+		jobStoreDelete(jobID)
+		return RunCResponse{JobId: ""}
 	}
+
+	return RunCResponse{JobId: jobID}
 }
 
-type JobFromId struct
-{
-	JobId string `json:"job_id"`
-}
-
-type JobFromIdResponse struct {
-	Stdout string `json:"stdout"`
-	Stderr string `json:"stderr"`
-}
-
+// JobFromIDController: return stdout/stderr only
 func JobFromIDController(req JobFromId) JobFromIdResponse {
-	return JobFromIdResponse{
-		Stdout: req.JobId,
-		Stderr: req.JobId,
+	j, ok := jobStoreGet(req.JobId)
+	if !ok {
+		return JobFromIdResponse{Stdout: "", Stderr: "job not found"}
 	}
+	return JobFromIdResponse{Stdout: j.stdout, Stderr: j.stderr}
 }
