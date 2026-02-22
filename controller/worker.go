@@ -11,15 +11,15 @@ const (
 )
 
 type jobItem struct {
-	id    string
-	code  string
-	stdin string
+	id		string
+	code	string
+	stdin	string
 }
 
 type jobState struct {
-	status string // queued|running|finished|failed
-	stdout string
-	stderr string
+	status	string // queued|running|finished|failed
+	stdout	string
+	stderr	string
 }
 
 var (
